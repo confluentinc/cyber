@@ -1,0 +1,82 @@
+{
+  "@timestamp": "2022-06-28T13:52:25.601Z",
+  "@metadata": {
+    "beat": "winlogbeat",
+    "type": "_doc",
+    "version": "8.2.3"
+  },
+  "agent": {
+    "ephemeral_id": "9b6281a9-9137-4fb7-98fd-56b187b554fe",
+    "id": "4b6c84c0-330d-41e6-88d0-8cabc587beb6",
+    "name": "DESKTOP-4G7BFNT",
+    "type": "winlogbeat",
+    "version": "8.2.3"
+  },
+  "winlog": {
+    "process": {
+      "pid": 2900,
+      "thread": {
+        "id": 10252
+      }
+    },
+    "api": "wineventlog",
+    "keywords": [
+      "ut:DnsAutoLogKeyword"
+    ],
+    "channel": "System",
+    "record_id": 1423,
+    "task": "DnsAllServersTimeoutSystem",
+    "opcode": "Info",
+    "user": {
+      "type": "Well Known Group",
+      "identifier": "S-1-5-20",
+      "domain": "NT AUTHORITY",
+      "name": "NETWORK SERVICE"
+    },
+    "event_id": "1014",
+    "event_data": {
+      "QueryName": "wpad",
+      "AddressLength": "128",
+      "Address": "020000000A640001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "computer_name": "DESKTOP-4G7BFNT",
+    "provider_guid": "{1c95126e-7eea-49a9-a3fe-a378b03ddb4d}",
+    "provider_name": "Microsoft-Windows-DNS-Client"
+  },
+  "event": {
+    "created": "2022-06-28T13:52:26.801Z",
+    "code": "1014",
+    "kind": "event",
+    "provider": "Microsoft-Windows-DNS-Client",
+    "action": "DnsAllServersTimeoutSystem"
+  },
+  "log": {
+    "level": "warning"
+  },
+  "message": "Name resolution for the name wpad timed out after none of the configured DNS servers responded.",
+  "host": {
+    "name": "DESKTOP-4G7BFNT",
+    "hostname": "DESKTOP-4G7BFNT",
+    "architecture": "x86_64",
+    "os": {
+      "platform": "windows",
+      "version": "10.0",
+      "family": "windows",
+      "name": "Windows 10 Pro",
+      "kernel": "10.0.19041.1766 (WinBuild.160101.0800)",
+      "build": "19044.1766",
+      "type": "windows"
+    },
+    "id": "61e23ae1-f143-47a4-92b1-5002e3aa2aaf",
+    "ip": [
+      "fe80::b19a:7f37:cd66:631e",
+      "10.100.0.85"
+    ],
+    "mac": [
+      "c0:3f:d5:63:a5:1d"
+    ]
+  },
+  "ecs": {
+    "version": "8.0.0"
+  }
+}

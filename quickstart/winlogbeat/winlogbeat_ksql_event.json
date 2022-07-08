@@ -1,0 +1,76 @@
+{
+  "@timestamp": "2022-07-08T15:32:48.456Z",
+  "@metadata": {
+    "BEAT": "winlogbeat",
+    "TYPE": "_doc",
+    "VERSION": "8.3.2"
+  },
+  "AGENT": {
+    "EPHEMERAL_ID": "c452138d-09fd-4031-b013-23a8a1b292bf",
+    "ID": "7bb2f47f-923e-4bfe-84a4-fc8900d1da7e",
+    "NAME": "DESKTOP-52DQGBP",
+    "TYPE": "winlogbeat",
+    "VERSION": "8.3.2"
+  },
+  "WINLOG": {
+    "PROCESS": {
+      "PID": 660,
+      "THREAD": {
+        "ID": 724
+      }
+    },
+    "API": "wineventlog",
+    "KEYWORDS": [
+      "Audit Success"
+    ],
+    "CHANNEL": "Security",
+    "RECORD_ID": 5462,
+    "TASK": "User Account Management",
+    "OPCODE": "Info",
+    "USER": null,
+    "EVENT_ID": "5379",
+    "EVENT_DATA": "{\"SubjectUserSid\":\"S-1-5-21-3547060965-2246896484-2578886957-1000\",\"TargetName\":\"OneDrive Cached Credential\",\"SubjectLogonId\":\"0x45ddf\",\"SubjectDomainName\":\"DESKTOP-52DQGBP\",\"Type\":\"0\",\"ReturnCode\":\"3221226021\",\"ProcessCreationTime\":\"2022-07-08T15:32:47.5752973Z\",\"ClientProcessId\":\"2828\",\"SubjectUserName\":\"bert\",\"CountOfCredentialsReturned\":\"0\",\"ReadOperation\":\"%%8100\"}",
+    "COMPUTER_NAME": "DESKTOP-52DQGBP",
+    "PROVIDER_GUID": "{54849625-5478-4994-a5ba-3e3b0328c30d}",
+    "PROVIDER_NAME": "Microsoft-Windows-Security-Auditing"
+  },
+  "EVENT": {
+    "CREATED": "2022-07-08T16:01:23.823Z",
+    "CODE": "5379",
+    "KIND": "event",
+    "PROVIDER": "Microsoft-Windows-Security-Auditing",
+    "ACTION": "User Account Management"
+  },
+  "LOG": {
+    "LEVEL": "information"
+  },
+  "MESSAGE": "Credential Manager credentials were read.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-21-3547060965-2246896484-2578886957-1000\n\tAccount Name:\t\tbert\n\tAccount Domain:\t\tDESKTOP-52DQGBP\n\tLogon ID:\t\t0x45DDF\n\tRead Operation:\t\tEnumerate Credentials\n\nThis event occurs when a user performs a read operation on stored credentials in Credential Manager.",
+  "HOST": {
+    "NAME": "DESKTOP-52DQGBP",
+    "HOSTNAME": "DESKTOP-52DQGBP",
+    "ARCHITECTURE": "x86_64",
+    "OS": {
+      "PLATFORM": "windows",
+      "VERSION": "10.0",
+      "FAMILY": "windows",
+      "NAME": "Windows 10 Pro",
+      "KERNEL": "10.0.19041.1288 (WinBuild.160101.0800)",
+      "BUILD": "19044.1288",
+      "TYPE": "windows"
+    },
+    "ID": "6476f7c1-3385-41a0-b94e-e00c7a668629",
+    "IP": [
+      "fe80::105d:c444:5dea:ef5",
+      "192.168.33.128",
+      "fe80::5d1f:2c70:76d3:3979",
+      "169.254.57.121"
+    ],
+    "MAC": [
+      "00:0c:29:b1:dd:5e",
+      "38:f9:d3:ea:16:b2"
+    ]
+  },
+  "ECS": {
+    "VERSION": "8.0.0"
+  }
+}
