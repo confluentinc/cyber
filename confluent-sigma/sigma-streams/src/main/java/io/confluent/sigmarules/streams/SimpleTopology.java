@@ -21,6 +21,7 @@
 package io.confluent.sigmarules.streams;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.jayway.jsonpath.Configuration;
 import io.confluent.sigmarules.models.DetectionResults;
 import io.confluent.sigmarules.models.SigmaRule;
 import io.confluent.sigmarules.rules.SigmaRuleCheck;
@@ -37,8 +38,8 @@ public class SimpleTopology {
   private SigmaRuleCheck ruleCheck = new SigmaRuleCheck();
 
   public void createSimpleTopology(KStream<String, JsonNode> sigmaStream, SigmaRule rule,
-      String outputTopic) {
-    sigmaStream.filter((k, sourceData) -> ruleCheck.isValid(rule, sourceData))
+                                   String outputTopic, Configuration jsonPathConf) {
+    sigmaStream.filter((k, sourceData) -> ruleCheck.isValid(rule, sourceData, jsonPathConf))
         .mapValues(sourceData -> buildResults(rule, sourceData))
         .to(outputTopic, Produced.with(Serdes.String(), DetectionResults.getJsonSerde()));
 

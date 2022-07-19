@@ -22,8 +22,11 @@ package io.confluent.sigmarules.streams;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.Option;
+import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
+import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import io.confluent.sigmarules.models.SigmaRule;
-import io.confluent.sigmarules.rules.SigmaRuleCheck;
 import io.confluent.sigmarules.rules.SigmaRulesFactory;
 import io.confluent.sigmarules.utilities.JsonUtils;
 import java.util.Map;
@@ -45,15 +48,15 @@ public class SigmaStream extends StreamManager {
     private ObjectMapper jsonMapper = new ObjectMapper(new JsonFactory());
     private String inputTopic;
     private String outputTopic;
-    private SigmaRuleCheck ruleCheck;
+    private Configuration jsonPathConf;
 
     public SigmaStream(Properties properties, SigmaRulesFactory ruleFactory) {
         super(properties);
 
         this.ruleFactory = ruleFactory;
-        this.ruleCheck = new SigmaRuleCheck();
         this.outputTopic = properties.getProperty("output.topic");
         this.inputTopic = properties.getProperty("data.topic");
+        this.jsonPathConf = setJsonPathConfig();
     }
 
     public void startStream() {
@@ -84,14 +87,22 @@ public class SigmaStream extends StreamManager {
             SigmaRule rule = entry.getValue();
             if (rule.getConditionsManager().hasAggregateCondition()) {
                 AggregateTopology aggregateTopology = new AggregateTopology();
-                aggregateTopology.createAggregateTopology(sigmaStream, rule, outputTopic);
+                aggregateTopology.createAggregateTopology(sigmaStream, rule, outputTopic, jsonPathConf);
             } else {
                 SimpleTopology simpleTopology = new SimpleTopology();
-                simpleTopology.createSimpleTopology(sigmaStream, rule, outputTopic);
+                simpleTopology.createSimpleTopology(sigmaStream, rule, outputTopic, jsonPathConf);
             }
         }
 
         return builder.build();
+    }
+
+    public Configuration setJsonPathConfig() {
+        return Configuration.builder()
+                .mappingProvider(new JacksonMappingProvider()) // Required for JsonNode object
+                .jsonProvider(new JacksonJsonProvider()) // Required for JsonNode object
+                .options(Option.SUPPRESS_EXCEPTIONS) // Return null when path is not found - https://github.com/json-path/JsonPath#tweaking-configuration
+                .build();
     }
 
 }

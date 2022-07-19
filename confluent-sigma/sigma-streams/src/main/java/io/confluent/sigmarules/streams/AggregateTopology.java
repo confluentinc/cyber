@@ -20,6 +20,7 @@
 package io.confluent.sigmarules.streams;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.jayway.jsonpath.Configuration;
 import io.confluent.sigmarules.models.AggregateValues;
 import io.confluent.sigmarules.models.DetectionResults;
 import io.confluent.sigmarules.models.SigmaRule;
@@ -45,7 +46,7 @@ public class AggregateTopology {
     private SigmaRuleCheck ruleCheck = new SigmaRuleCheck();
 
     public void createAggregateTopology(KStream<String, JsonNode> sigmaStream, SigmaRule rule,
-        String outputTopic) {
+        String outputTopic, Configuration jsonPathConf) {
 
         final Serde<AggregateResults> aggregateSerde = AggregateResults.getJsonSerde();
         Long windowTimeMS = rule.getDetectionsManager().getWindowTimeMS();
@@ -53,7 +54,7 @@ public class AggregateTopology {
 
         AggregateValues aggregateValues = rule.getConditionsManager().getAggregateCondition().getAggregateValues();
 
-        sigmaStream.filter((k, sourceData) -> ruleCheck.isValid(rule, sourceData))
+        sigmaStream.filter((k, sourceData) -> ruleCheck.isValid(rule, sourceData, jsonPathConf))
             .selectKey((k, v) -> updateKey(aggregateValues))
             .groupByKey()
             .windowedBy(SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofMillis(windowTimeMS),

@@ -28,7 +28,6 @@ import io.confluent.sigmarules.models.DetectionResults;
 import io.confluent.sigmarules.rules.SigmaRulesFactory;
 import io.confluent.sigmarules.streams.SigmaStream;
 import java.io.IOException;
-import java.security.Security;
 import java.util.Properties;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsConfig;
@@ -343,6 +342,120 @@ public class SimpleStreamTest {
         inputTopic.pipeInput("{\"foo\" : \"bc\"}");
         assertTrue(outputTopic.isEmpty());
 
+    }
+
+    @Test
+    public void checkNestedMapUsingListRule()
+            throws IOException, InvalidSigmaRuleException, SigmaRuleParserException {
+
+        // Not able to test field mappings, so adding the rule in the format that field mappings normalize to
+        String testRule = "title: Simple Http\n"
+                + "logsource:\n"
+                + "  product: zeek\n"
+                + "  service: http\n"
+                + "detection:\n"
+                + "  test:\n"
+                + "     - $.Event.System.EventLog: Security\n"
+                + "       $.Event.System.EventID:\n"
+                + "         - 517\n"
+                + "         - 1102\n"
+                + "  condition: test";
+
+        SigmaRulesFactory srf = new SigmaRulesFactory();;
+        srf.setFiltersFromProperties(getProperties());
+        srf.addRule("Simple Http", testRule);
+
+        SigmaStream stream = new SigmaStream(getProperties(), srf);
+        topology = stream.createTopology();
+        td = new TopologyTestDriver(topology, getProperties());
+
+        inputTopic = td.createInputTopic("test-input", Serdes.String().serializer(),
+                Serdes.String().serializer());
+        outputTopic = td.createOutputTopic("test-output", Serdes.String().deserializer(),
+                Serdes.String().deserializer());
+
+        assertTrue(outputTopic.isEmpty());
+
+        inputTopic.pipeInput("{\"Event\": {\"System\": {\"EventLog\" : \"Security\", \"EventID\" : \"517\"}}}");
+        DetectionResults results = objectMapper.readValue(outputTopic.readValue(), DetectionResults.class);
+        assertTrue(results.getSigmaMetaData().getTitle().equals("Simple Http"));
+        assertTrue(outputTopic.isEmpty());
+    }
+
+    @Test
+    public void checkObjectWithPeriodDelimiterUsingListRule()
+            throws IOException, InvalidSigmaRuleException, SigmaRuleParserException {
+
+        // Not able to test field mappings, so adding the rule in the format that field mappings normalize to
+        String testRule = "title: Simple Http\n"
+                + "logsource:\n"
+                + "  product: zeek\n"
+                + "  service: http\n"
+                + "detection:\n"
+                + "  test:\n"
+                + "     - Event.System.EventLog: Security\n"
+                + "       Event.System.EventID:\n"
+                + "         - 517\n"
+                + "         - 1102\n"
+                + "  condition: test";
+
+        SigmaRulesFactory srf = new SigmaRulesFactory();;
+        srf.setFiltersFromProperties(getProperties());
+        srf.addRule("Simple Http", testRule);
+
+        SigmaStream stream = new SigmaStream(getProperties(), srf);
+        topology = stream.createTopology();
+        td = new TopologyTestDriver(topology, getProperties());
+
+        inputTopic = td.createInputTopic("test-input", Serdes.String().serializer(),
+                Serdes.String().serializer());
+        outputTopic = td.createOutputTopic("test-output", Serdes.String().deserializer(),
+                Serdes.String().deserializer());
+
+        assertTrue(outputTopic.isEmpty());
+
+        inputTopic.pipeInput("{\"Event.System.EventLog\" : \"Security\", \"Event.System.EventID\" : \"517\"}");
+        DetectionResults results = objectMapper.readValue(outputTopic.readValue(), DetectionResults.class);
+        assertTrue(results.getSigmaMetaData().getTitle().equals("Simple Http"));
+        assertTrue(outputTopic.isEmpty());
+    }
+
+    @Test
+    public void checkObjectWithoutDetectionField()
+            throws IOException, InvalidSigmaRuleException, SigmaRuleParserException {
+
+        // Not able to test field mappings, so adding the rule in the format that field mappings normalize to
+        String testRule = "title: Simple Http\n"
+                + "logsource:\n"
+                + "  product: zeek\n"
+                + "  service: http\n"
+                + "detection:\n"
+                + "  test:\n"
+                + "     - $.Event.System.EventLog: Security\n"
+                + "       $.Event.System.EventID:\n"
+                + "         - 517\n"
+                + "         - 1102\n"
+                + "  condition: test";
+
+        SigmaRulesFactory srf = new SigmaRulesFactory();
+        srf.setFiltersFromProperties(getProperties());
+        srf.addRule("Simple Http", testRule);
+
+        SigmaStream stream = new SigmaStream(getProperties(), srf);
+        topology = stream.createTopology();
+        td = new TopologyTestDriver(topology, getProperties());
+
+        inputTopic = td.createInputTopic("test-input", Serdes.String().serializer(),
+                Serdes.String().serializer());
+        outputTopic = td.createOutputTopic("test-output", Serdes.String().deserializer(),
+                Serdes.String().deserializer());
+
+        assertTrue(outputTopic.isEmpty());
+
+        inputTopic.pipeInput("{\"Event\": {\"System\": {\"EventLog\" : \"Security\"}}}");
+        DetectionResults results = objectMapper.readValue(outputTopic.readValue(), DetectionResults.class);
+        assertTrue(results.getSigmaMetaData().getTitle().equals("Simple Http"));
+        assertTrue(outputTopic.isEmpty());
     }
 
 }
